@@ -201,6 +201,7 @@ function exportarReportesPDF() {
         theme: 'grid'
     });
 
+
     // Top clientes
     const ventasClientes = clientes.map(cliente => ({
         cliente,
