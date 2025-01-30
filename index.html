@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Huerta</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="logo">La Huerta</h1>
+            <div class="nav-buttons">
+                <button class="nav-btn active" data-tab="productos">Productos</button>
+                <button class="nav-btn" data-tab="clientes">Clientes</button>
+                <button class="nav-btn" data-tab="reportes">Reportes</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Sección de Productos -->
+        <section id="productos" class="tab-content active">
+            <div class="form-container">
+                <div class="header-actions">
+                    <h2>Agregar/Editar Producto</h2>
+                    <button onclick="exportarProductosPDF()" class="btn btn-secondary">
+                        <i class="icon-download"></i>
+                        Exportar PDF
+                    </button>
+                </div>
+                <form id="productoForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="nombre">Nombre</label>
+                            <input type="text" id="nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="categoria">Categoría</label>
+                            <select id="categoria">
+                                <option value="verduras">Verduras</option>
+                                <option value="frutas">Frutas</option>
+                                <option value="hierbas">Hierbas</option>
+                                <option value="otros">Otros</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="precio">Precio por Kilo</label>
+                            <input type="number" id="precio" min="0" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="stock">Stock (kg)</label>
+                            <input type="number" id="stock" min="0" step="0.1" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="imagen">URL de Imagen (opcional)</label>
+                        <input type="url" id="imagen" placeholder="Dejar vacío para imagen aleatoria">
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="icon-plus"></i>
+                        Guardar Producto
+                    </button>
+                </form>
+            </div>
+
+            <div class="filter-container">
+                <h2>Productos</h2>
+                <select id="filtroCategoria">
+                    <option value="todos">Todas las Categorías</option>
+                    <option value="verduras">Verduras</option>
+                    <option value="frutas">Frutas</option>
+                    <option value="hierbas">Hierbas</option>
+                    <option value="otros">Otros</option>
+                </select>
+            </div>
+
+            <div id="listaProductos" class="productos-grid"></div>
+        </section>
+
+        <!-- Sección de Clientes -->
+        <section id="clientes" class="tab-content">
+            <div class="form-container">
+                <div class="header-actions">
+                    <h2>Agregar Compra</h2>
+                    <button onclick="exportarClientesPDF()" class="btn btn-secondary">
+                        <i class="icon-download"></i>
+                        Exportar PDF
+                    </button>
+                </div>
+                <form id="clienteForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="nombreCliente">Nombre del Cliente</label>
+                            <input type="text" id="nombreCliente" list="sugerenciasClientes" required>
+                            <datalist id="sugerenciasClientes"></datalist>
+                        </div>
+                        <div class="form-group">
+                            <label for="productoId">Producto</label>
+                            <select id="productoId" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="cantidad">Cantidad (kg)</label>
+                            <input type="number" id="cantidad" min="0.1" step="0.1" value="1" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="icon-user-plus"></i>
+                        Agregar Compra
+                    </button>
+                </form>
+            </div>
+
+            <div id="listaClientes" class="clientes-lista"></div>
+        </section>
+
+        <!-- Sección de Reportes -->
+        <section id="reportes" class="tab-content">
+            <div class="header-actions">
+                <h2>Reportes de Ventas</h2>
+                <button onclick="exportarReportesPDF()" class="btn btn-secondary">
+                    <i class="icon-download"></i>
+                    Exportar PDF
+                </button>
+            </div>
+            <div class="reportes-grid">
+                <div class="reporte-card">
+                    <div class="reporte-header">
+                        <h3>Ventas Totales</h3>
+                        <i class="icon-dollar-sign"></i>
+                    </div>
+                    <p id="ventasTotales" class="reporte-valor">$0.00</p>
+                </div>
+                <div class="reporte-card">
+                    <div class="reporte-header">
+                        <h3>Producto Más Vendido</h3>
+                        <i class="icon-shopping-bag"></i>
+                    </div>
+                    <p id="productoTop" class="reporte-valor">N/A</p>
+                    <p id="productoTopVentas" class="reporte-subtexto">$0.00</p>
+                </div>
+                <div class="reporte-card">
+                    <div class="reporte-header">
+                        <h3>Cliente Principal</h3>
+                        <i class="icon-bar-chart"></i>
+                    </div>
+                    <p id="clienteTop" class="reporte-valor">N/A</p>
+                    <p id="clienteTopCompras" class="reporte-subtexto">$0.00</p>
+                </div>
+            </div>
+
+            <div class="reportes-detalle">
+                <div class="reporte-tabla">
+                    <h3>Productos Más Vendidos</h3>
+                    <div id="topProductos" class="reporte-lista"></div>
+                </div>
+                <div class="reporte-tabla">
+                    <h3>Mejores Clientes</h3>
+                    <div id="topClientes" class="reporte-lista"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
